@@ -2,6 +2,12 @@
 name = "ghl"
 version = "0.1.0"
 edition = "2021"
+authors = ["Axlefublr"]
+license = "MIT"
+description = "An easier way to construct Github links."
+readme = "README.md"
+homepage = "https://github.com/Axlefublr/ghl"
+repository = "https://github.com/Axlefublr/ghl"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
