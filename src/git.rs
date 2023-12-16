@@ -1,5 +1,8 @@
 use std::error::Error;
 use std::fmt;
+use std::fs;
+use std::path::Path;
+use std::path::PathBuf;
 use std::process::Command;
 
 pub enum Connector {
@@ -44,4 +47,15 @@ pub fn rev_parse(rev: String) -> Result<String, Box<dyn Error>> {
         rev
     };
     sh(Command::new("git").arg("rev-parse").arg(rev))
+}
+
+fn repo_root() -> Result<PathBuf, Box<dyn Error>> {
+    Ok(sh(Command::new("git").arg("rev-parse").arg("--show-toplevel"))?.parse()?)
+}
+
+pub fn connector(path: &Path) -> Result<Connector, Box<dyn Error>> {
+    match fs::symlink_metadata(path)?.is_dir() {
+        true => Ok(Connector::Tree),
+        false => Ok(Connector::Blob)
+    }
 }

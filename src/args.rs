@@ -13,5 +13,5 @@ pub struct Args {
     /// Remote. By default, takes the first one from `git remote`. If your repo is a fork, this will result in a link to *your* repository, rather than the upstream one. Same case if your repo isn't a fork.
     #[arg(short, long)]
     pub remote: Option<String>,
-    pub file: Option<PathBuf>,
+    pub path: Option<PathBuf>,
 }
