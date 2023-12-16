@@ -1,3 +1,8 @@
+use args::Args;
+use clap::Parser;
+
+mod args;
+
 fn main() {
-    println!("Hello, world!");
+    let Args { commit, file } = Args::parse();
 }
