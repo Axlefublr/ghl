@@ -2,7 +2,8 @@ use args::Args;
 use clap::Parser;
 
 mod args;
+mod git;
 
 fn main() {
-    let Args { commit, file } = Args::parse();
+    let args = Args::parse();
 }
