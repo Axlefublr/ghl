@@ -2,6 +2,19 @@ use std::error::Error;
 use std::fmt;
 use std::process::Command;
 
+pub enum Connector {
+    Blob,
+    Tree
+}
+
+impl fmt::Display for Connector {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Blob => write!(f, "blob"),
+            Self::Tree => write!(f, "tree")
+        }
+    }
+}
 fn sh(command: &mut Command) -> Result<String, Box<dyn Error>> {
     let output = command.output()?;
     if !output.status.success() {
@@ -24,16 +37,6 @@ pub fn remote_url(remote: &str) -> Result<String, Box<dyn Error>> {
     Ok(link.strip_suffix(".git").unwrap_or(&link).to_owned())
 }
 
-pub enum Connector {
-    Blob,
-    Tree
-}
-
-impl fmt::Display for Connector {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Blob => write!(f, "blob"),
-            Self::Tree => write!(f, "tree")
-        }
-    }
+pub fn rev_parse(rev: &str) -> Result<String, Box<dyn Error>> {
+    sh(Command::new("git").arg("rev-parse").arg(rev))
 }

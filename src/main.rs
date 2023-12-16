@@ -14,7 +14,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
     let link = git::remote_url(&remote)?;
     let branch = if let Some(branch) = args.branch {
-        format!("/{0}/{branch}", Connector::Tree)
+        if args.parse {
+            format!("/{0}/{1}", Connector::Tree, git::rev_parse(&branch)?)
+        } else {
+            format!("/{0}/{branch}", Connector::Tree)
+        }
     } else {
         String::default()
     };
