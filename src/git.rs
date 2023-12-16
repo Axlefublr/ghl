@@ -37,6 +37,11 @@ pub fn remote_url(remote: &str) -> Result<String, Box<dyn Error>> {
     Ok(link.strip_suffix(".git").unwrap_or(&link).to_owned())
 }
 
-pub fn rev_parse(rev: &str) -> Result<String, Box<dyn Error>> {
+pub fn rev_parse(rev: String) -> Result<String, Box<dyn Error>> {
+    let rev = if rev.starts_with("head") {
+        rev.replace("head", "HEAD")
+    } else {
+        rev
+    };
     sh(Command::new("git").arg("rev-parse").arg(rev))
 }
