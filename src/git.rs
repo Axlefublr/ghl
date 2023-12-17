@@ -1,3 +1,4 @@
+use std::env;
 use std::error::Error;
 use std::fmt;
 use std::fs;
@@ -7,14 +8,14 @@ use std::process::Command;
 
 pub enum Connector {
     Blob,
-    Tree
+    Tree,
 }
 
 impl fmt::Display for Connector {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Blob => write!(f, "blob"),
-            Self::Tree => write!(f, "tree")
+            Self::Tree => write!(f, "tree"),
         }
     }
 }
@@ -56,6 +57,12 @@ fn repo_root() -> Result<PathBuf, Box<dyn Error>> {
 pub fn connector(path: &Path) -> Result<Connector, Box<dyn Error>> {
     match fs::symlink_metadata(path)?.is_dir() {
         true => Ok(Connector::Tree),
-        false => Ok(Connector::Blob)
+        false => Ok(Connector::Blob),
     }
+}
+
+pub fn normalize_path(path: PathBuf) -> Result<PathBuf, Box<dyn Error>> {
+    let current = env::current_dir()?;
+    let absolute_specified = current.join(path);
+    Ok(absolute_specified.strip_prefix(repo_root()?)?.into())
 }
