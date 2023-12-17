@@ -20,18 +20,24 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
     let branch = if let Some(branch) = args.branch {
         if args.parse {
-            format!("/{0}/{1}", connector, git::rev_parse(branch)?)
+            Some(format!("/{0}/{1}", connector, git::rev_parse(branch)?))
         } else {
-            format!("/{0}/{branch}", connector)
+            Some(format!("/{0}/{branch}", connector))
         }
     } else {
-        String::default()
+        None
     };
+    let ensured_branch: String;
     let path = if let Some(path) = args.path {
+        ensured_branch = match branch {
+            Some(branch) => branch,
+            None => format!("/{0}/{1}", connector, git::branch()?),
+        };
         format!("/{}", git::normalize_path(path)?.display())
     } else {
+        ensured_branch = branch.unwrap_or_default();
         Default::default()
     };
-    println!("{link}{branch}{path}");
+    println!("{link}{ensured_branch}{path}");
     Ok(())
 }
