@@ -63,9 +63,8 @@ fn repo_root() -> Result<PathBuf, Box<dyn Error>> {
 }
 
 pub fn normalize_path(path: PathBuf) -> Result<PathBuf, Box<dyn Error>> {
-    let current = env::current_dir()?;
-    let absolute_specified = current.join(path);
-    Ok(absolute_specified.strip_prefix(repo_root()?)?.into())
+    let current = path.canonicalize()?;
+    Ok(current.strip_prefix(repo_root()?)?.into())
 }
 
 pub fn open_in_browser(link: &str) -> Result<(), Box<dyn Error>> {
