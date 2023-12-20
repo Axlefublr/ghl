@@ -1,4 +1,5 @@
 use std::env;
+use std::env::VarError;
 use std::error::Error;
 use std::fmt;
 use std::fs;
@@ -50,10 +51,6 @@ pub fn rev_parse(rev: String) -> Result<String, Box<dyn Error>> {
     sh(Command::new("git").arg("rev-parse").arg(rev))
 }
 
-fn repo_root() -> Result<PathBuf, Box<dyn Error>> {
-    Ok(sh(Command::new("git").arg("rev-parse").arg("--show-toplevel"))?.parse()?)
-}
-
 pub fn connector(path: &Path) -> Result<Connector, Box<dyn Error>> {
     match fs::symlink_metadata(path)?.is_dir() {
         true => Ok(Connector::Tree),
@@ -61,8 +58,27 @@ pub fn connector(path: &Path) -> Result<Connector, Box<dyn Error>> {
     }
 }
 
+fn repo_root() -> Result<PathBuf, Box<dyn Error>> {
+    Ok(sh(Command::new("git").arg("rev-parse").arg("--show-toplevel"))?.parse()?)
+}
+
 pub fn normalize_path(path: PathBuf) -> Result<PathBuf, Box<dyn Error>> {
     let current = env::current_dir()?;
     let absolute_specified = current.join(path);
     Ok(absolute_specified.strip_prefix(repo_root()?)?.into())
+}
+
+pub fn open_in_browser(link: &str) -> Result<(), Box<dyn Error>> {
+    let browser = match env::var("BROWSER") {
+        Ok(path) => path,
+        Err(error) => {
+            if let VarError::NotPresent = error {
+                Err("BROWSER environment variable is undefined.")?
+            } else {
+                Err(error)?
+            }
+        }
+    };
+    let _ = sh(Command::new(browser).arg(link)).unwrap();
+    Ok(())
 }

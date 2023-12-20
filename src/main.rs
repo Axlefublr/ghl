@@ -1,6 +1,7 @@
 use crate::git::Connector;
 use args::Args;
 use clap::Parser;
+use git::open_in_browser;
 use std::error::Error;
 
 mod args;
@@ -34,10 +35,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         Default::default()
     };
+    let link = format!("{link}{branch}{path}");
     if args.trim {
-        print!("{link}{branch}{path}")
+        print!("{link}")
     } else {
-        println!("{link}{branch}{path}");
+        println!("{link}");
+    }
+    if args.web {
+        open_in_browser(&link)?;
     }
     Ok(())
 }

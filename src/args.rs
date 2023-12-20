@@ -16,5 +16,8 @@ pub struct Args {
     /// Trim the final newline of the output link
     #[arg(short, long)]
     pub trim: bool,
+    /// Open the resulting link in your $BROWSER
+    #[arg(short, long)]
+    pub web: bool,
     pub path: Option<PathBuf>,
 }
