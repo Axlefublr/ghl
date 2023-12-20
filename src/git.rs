@@ -59,7 +59,10 @@ pub fn connector(path: &Path, connector: Option<Connector>) -> Result<Connector,
     if let Some(connector) = connector {
         return Ok(connector);
     }
-    match fs::symlink_metadata(path).map_err(|_| PATH_NOT_FOUND_ERROR)?.is_dir() {
+    match fs::symlink_metadata(path)
+        .map_err(|_| PATH_NOT_FOUND_ERROR)?
+        .is_dir()
+    {
         true => Ok(Connector::Tree),
         false => Ok(Connector::Blob),
     }
