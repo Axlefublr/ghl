@@ -34,6 +34,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         Default::default()
     };
-    println!("{link}{branch}{path}");
+    if args.trim {
+        print!("{link}{branch}{path}")
+    } else {
+        println!("{link}{branch}{path}");
+    }
     Ok(())
 }
