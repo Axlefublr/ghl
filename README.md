@@ -91,6 +91,23 @@ Options:
   -V, --version           Print version
 ```
 
+## Examples
+
+```
+$ ghl
+https://github.com/Axlefublr/ghl
+$ ghl -b main
+https://github.com/Axlefublr/ghl/tree/main
+$ ghl -b main src/main.rs
+https://github.com/Axlefublr/ghl/blob/main/src/main.rs
+$ ghl -pb head src/main.rs
+https://github.com/Axlefublr/ghl/blob/b9b2d5ae285db97b6de3aa542e29a8987bf9e76a/src/main.rs
+$ ghl -pb b9b2~2
+https://github.com/Axlefublr/ghl/tree/3c3de7dd17e00fea563bb09598b2671da09ecbd4
+$ ghl -wb dev src
+https://github.com/Axlefublr/ghl/tree/dev/src
+```
+
 ## Install
 
 ```
