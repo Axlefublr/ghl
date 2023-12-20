@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
     let link = git::remote_url(&remote)?;
     let connector = if let Some(ref path) = args.path {
-        git::connector(path)?
+        git::connector(path, args.connector)?
     } else {
         Connector::Tree
     };
@@ -31,7 +31,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Default::default()
     };
     let path = if let Some(path) = args.path {
-        format!("/{}", git::normalize_path(path)?.display())
+        if args.connector.is_some() {
+            format!("/{}", path.display())
+        } else {
+            format!("/{}", git::normalize_path(path)?.display())
+        }
     } else {
         Default::default()
     };

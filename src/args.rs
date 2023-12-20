@@ -1,6 +1,8 @@
 use clap::Parser;
 use std::path::PathBuf;
 
+use crate::git::Connector;
+
 #[derive(Parser)]
 #[command(author, version, about)]
 pub struct Args {
@@ -19,5 +21,8 @@ pub struct Args {
     /// Open the resulting link in your $BROWSER
     #[arg(short, long)]
     pub web: bool,
+    /// Assume the provided filepath is literal and is relative to the repo root, and provide the connector type yourself. `tree` if you're pointing to a directory, `blob` if not. Useful when you're trying to point to a symlink, rather than the file it points to, or if you're pointing to a file you know is going to be in the remote but not locally. This is required when you're specifying a file that no longer exists, but did in some commit.
+    #[arg(short, long)]
+    pub connector: Option<Connector>,
     pub path: Option<PathBuf>,
 }

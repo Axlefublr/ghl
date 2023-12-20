@@ -1,3 +1,4 @@
+use clap::ValueEnum;
 use std::env;
 use std::env::VarError;
 use std::error::Error;
@@ -7,6 +8,9 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 
+const PATH_NOT_FOUND_ERROR: &str = "Couldn't resolve specified path to a real file / directory. Use --connector to specify the connector type yourself.";
+
+#[derive(Clone, Copy, ValueEnum)]
 pub enum Connector {
     Blob,
     Tree,
@@ -51,8 +55,11 @@ pub fn rev_parse(rev: String) -> Result<String, Box<dyn Error>> {
     sh(Command::new("git").arg("rev-parse").arg(rev))
 }
 
-pub fn connector(path: &Path) -> Result<Connector, Box<dyn Error>> {
-    match fs::symlink_metadata(path)?.is_dir() {
+pub fn connector(path: &Path, connector: Option<Connector>) -> Result<Connector, Box<dyn Error>> {
+    if let Some(connector) = connector {
+        return Ok(connector);
+    }
+    match fs::symlink_metadata(path).map_err(|_| PATH_NOT_FOUND_ERROR)?.is_dir() {
         true => Ok(Connector::Tree),
         false => Ok(Connector::Blob),
     }
@@ -63,7 +70,7 @@ fn repo_root() -> Result<PathBuf, Box<dyn Error>> {
 }
 
 pub fn normalize_path(path: PathBuf) -> Result<PathBuf, Box<dyn Error>> {
-    let current = path.canonicalize()?;
+    let current = path.canonicalize().map_err(|_| PATH_NOT_FOUND_ERROR)?;
     Ok(current.strip_prefix(repo_root()?)?.into())
 }
 
