@@ -14,6 +14,7 @@ const PATH_NOT_FOUND_ERROR: &str = "Couldn't resolve specified path to a real fi
 pub enum Connector {
     Blob,
     Tree,
+    Commit,
 }
 
 impl fmt::Display for Connector {
@@ -21,6 +22,7 @@ impl fmt::Display for Connector {
         match self {
             Self::Blob => write!(f, "blob"),
             Self::Tree => write!(f, "tree"),
+            Self::Commit => write!(f, "commit"),
         }
     }
 }
@@ -38,7 +40,10 @@ pub fn branch() -> Result<String, Box<dyn Error>> {
 }
 
 pub fn remote() -> Result<String, Box<dyn Error>> {
-    Ok(sh(Command::new("git").arg("remote"))?.lines().take(1).collect())
+    Ok(sh(Command::new("git").arg("remote"))?
+        .lines()
+        .take(1)
+        .collect())
 }
 
 pub fn remote_url(remote: &str) -> Result<String, Box<dyn Error>> {

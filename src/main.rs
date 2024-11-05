@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let connector = if let Some(ref path) = args.path {
         git::connector(path, args.connector)?
     } else {
-        Connector::Tree
+        args.connector.unwrap_or(Connector::Tree)
     };
     let branch = if let Some(branch) = args.branch {
         if args.parse {

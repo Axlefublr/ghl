@@ -18,6 +18,8 @@ In the middle of the link, you'll see either `tree` or `blob`. It's the former i
 
 In those situations, you'll have to use the `--connector` / `-c` flag to specify `tree` or `blob` yourself. Keep in mind though, that at that point the provided path *isn't* resolved, so it assumes you're specifying a path **relative to the repo root**.
 
+Another `--connector` that's available is `commit`: this (I think) doesn't make any sense to use with a path, and is useful for when you want a link pointing directly at some commit's diff.
+
 The default link goes to the default branch, latest commit, as you would expect. However, you can specify a different branch / commit you want to get a link to with the `--branch` / `-b` flag. Something like `-b dev` or `-b 18e5a52`.
 
 That flag takes your input *literally*, however these features are available:
@@ -38,7 +40,7 @@ Did you ever find it annoying how some programs unecessarily print the final new
 ## Other remotes, aside from Github
 
 While this program was made for Github specifically, it can technically work for other remotes too, considering these assumptions:
-1. You're using git
+1. You're using git / git-compatible VCS
 1. After the repository name in the link, you have `tree` if you're pointing to a directory (or a branch if you didn't specify a filepath) and `blob` if you're not.
 1. After `tree` / `blob` goes the branch name, or commit hash
 1. The filepath comes after those
@@ -51,42 +53,28 @@ An easier way to construct Github links.
 Usage: ghl [OPTIONS] [PATH]
 
 Arguments:
-  [PATH]
+  [PATH]  
 
 Options:
-  -b, --branch <BRANCH>   Make a link to a specific branch / commit.
-                          Branch is not specified by default, which
-                          results in making the link follow the default
-                          branch
-  -p, --parse             Parse `branch` argument with `git rev-parse`.
-                          This allows you to use things like HEAD (or
-                          just head), HEAD^, commit~2; short commit
-                          hashes become long commit hashes, branch names
-                          become their latest commit's hash.
-                          Essentially, everything that happens when you
-                          use `git rev-parse`. This is not the default
-                          because you couldn't specify links to branches
-                          that way, and would only be able to specify
-                          links to a branch's latest commit
-  -r, --remote <REMOTE>   Specify remote name explicitly. By default,
-                          takes the first one from `git remote`. If your
-                          repo is a fork, this will result in a link to
-                          *your* repository, rather than the upstream
-                          one. You can specify `upstream` (usually) to
-                          mean the upstream repository
+  -b, --branch <BRANCH>   Make a link to a specific branch / commit. Branch is not specified by default, which
+                          results in making the link follow the default branch
+  -p, --parse             Parse `branch` argument with `git rev-parse`. This allows you to use things like HEAD
+                          (or just head), HEAD^, commit~2; short commit hashes become long commit hashes, branch
+                          names become their latest commit's hash. Essentially, everything that happens when you
+                          use `git rev-parse`. This is not the default because you couldn't specify links to
+                          branches that way, and would only be able to specify links to a branch's latest commit
+  -r, --remote <REMOTE>   Specify remote name explicitly. By default, takes the first one from `git remote`. If
+                          your repo is a fork, this will result in a link to *your* repository, rather than the
+                          upstream one. You can specify `upstream` (usually) to mean the upstream repository
   -t, --trim              Trim the final newline of the output link
   -w, --web               Open the resulting link in your $BROWSER
-  -c, --connector <WORD>  Assume the provided filepath is literal and is
-                          relative to the repo root, and provide the
-                          connector type yourself. `tree` if you're
-                          pointing to a directory, `blob` if not. Useful
-                          when you're trying to point to a symlink,
-                          rather than the file it points to, or if
-                          you're pointing to a file you know is going to
-                          be in the remote but not locally. This is
-                          required when you're specifying a file that no
-                          longer exists, but did in some commit
-                          [possible values: blob, tree]
+  -c, --connector <WORD>  Assume the provided filepath is literal and is relative to the repo root, and provide
+                          the connector type yourself. `tree` if you're pointing to a directory, `blob` if not.
+                          Useful when you're trying to point to a symlink, rather than the file it points to, or
+                          if you're pointing to a file you know is going to be in the remote but not locally.
+                          This is required when you're specifying a file that no longer exists, but did in some
+                          commit. `commit` is also available if you just want to point at a commit's diff,
+                          rather than a filepath [possible values: blob, tree, commit]
   -h, --help              Print help
   -V, --version           Print version
 ```
@@ -106,6 +94,10 @@ $ ghl -pb b9b2~2
 https://github.com/Axlefublr/ghl/tree/3c3de7dd17e00fea563bb09598b2671da09ecbd4
 $ ghl -wb dev src
 https://github.com/Axlefublr/ghl/tree/dev/src
+$ ghl -pb head -c commit
+https://github.com/Axlefublr/ghl/commit/46974897532f68e1b9e234d4640d485ac6d768c4
+$ ghl -pb 3c3de7dd17e0 -c commit
+https://github.com/Axlefublr/ghl/commit/3c3de7dd17e00fea563bb09598b2671da09ecbd4
 ```
 
 ## Install

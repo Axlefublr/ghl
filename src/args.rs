@@ -31,6 +31,7 @@ pub struct Args {
     /// `tree` if you're pointing to a directory, `blob` if not.
     /// Useful when you're trying to point to a symlink, rather than the file it points to, or if you're pointing to a file you know is going to be in the remote but not locally.
     /// This is required when you're specifying a file that no longer exists, but did in some commit.
+    /// `commit` is also available if you just want to point at a commit's diff, rather than a filepath.
     #[arg(short, long, value_name = "WORD")]
     pub connector: Option<Connector>,
     pub path: Option<PathBuf>,
