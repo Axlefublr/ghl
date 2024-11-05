@@ -1,8 +1,10 @@
-use crate::git::Connector;
+use std::error::Error;
+
 use args::Args;
 use clap::Parser;
 use git::open_in_browser;
-use std::error::Error;
+
+use crate::git::Connector;
 
 mod args;
 mod git;

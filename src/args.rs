@@ -1,6 +1,8 @@
-use crate::git::Connector;
-use clap::Parser;
 use std::path::PathBuf;
+
+use clap::Parser;
+
+use crate::git::Connector;
 
 #[derive(Parser)]
 #[command(author, version, about)]

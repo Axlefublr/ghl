@@ -1,4 +1,3 @@
-use clap::ValueEnum;
 use std::env;
 use std::env::VarError;
 use std::error::Error;
@@ -7,6 +6,8 @@ use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
+
+use clap::ValueEnum;
 
 const PATH_NOT_FOUND_ERROR: &str = "Couldn't resolve specified path to a real file / directory. Use --connector to specify the connector type yourself.";
 
@@ -40,10 +41,7 @@ pub fn branch() -> Result<String, Box<dyn Error>> {
 }
 
 pub fn remote() -> Result<String, Box<dyn Error>> {
-    Ok(sh(Command::new("git").arg("remote"))?
-        .lines()
-        .take(1)
-        .collect())
+    Ok(sh(Command::new("git").arg("remote"))?.lines().take(1).collect())
 }
 
 pub fn remote_url(remote: &str) -> Result<String, Box<dyn Error>> {
@@ -91,7 +89,7 @@ pub fn open_in_browser(link: &str) -> Result<(), Box<dyn Error>> {
             } else {
                 Err(error)?
             }
-        }
+        },
     };
     let _ = sh(Command::new(browser).arg(link)).unwrap();
     Ok(())
